@@ -1,0 +1,88 @@
+/* Reset and Body Styling */
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    font-family: Arial, sans-serif;
+    background: url('https://lh3.googleusercontent.com/h_XgJ0f9k9KQI0y5RhSzaEY0XS0ZTvhXcdCcBb3EQEUlyZPxUbDC0cRxGu4TGj_l19Uw9B2qxvo2NEpWvNnDWL2ItAysBNOjBuk=rw-e365-nu-w1875') no-repeat center center fixed; /* Replace with your background image URL */
+    background-size: cover; /* Ensures the image covers the entire screen */
+    overflow-x: hidden; /* Prevents horizontal scrolling */
+}
+
+/* Navigation Bar Styling */
+#toplist {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    list-style: none;
+    padding: 10px 20px;
+    margin: 0;
+    background: rgba(255, 255, 255, 0.8); /* Semi-transparent background for better visibility */
+    border-radius: 5px;
+    position: fixed; /* Fixes the navigation at the top */
+    top: 10px;
+    width: 95%;
+    z-index: 3; /* Ensures it stays above the background image */
+}
+
+#toplist li {
+    padding: 5px 10px;
+}
+
+#toplist a {
+    text-decoration: none;
+    color: #000;
+    font-weight: bold;
+}
+
+#toplist a:hover {
+    color: #007bff;
+}
+
+/* Signup Form Styling */
+.signup-container {
+    max-width: 400px;
+    margin: 150px auto; /* Adds spacing from the top */
+    background: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* Form Fields */
+.signup-container .form-control {
+    border-radius: 5px;
+}
+
+/* Submit Button */
+.signup-container .btn-primary {
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 16px;
+}
+
+.signup-container .btn-primary:hover {
+    background-color: #0056b3;
+}
+
+/* Ensures the container and form fit properly for smaller screens */
+.container {
+    padding: 20px 10px;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 576px) {
+    .signup-container {
+        padding: 15px;
+        margin: 100px auto;
+    }
+
+    #toplist {
+        flex-direction: column;
+        text-align: center;
+    }
+}

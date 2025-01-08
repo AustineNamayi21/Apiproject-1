@@ -1,0 +1,117 @@
+body, html { 
+    height: 100%;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    color: white;
+}
+
+/* Background video container */
+.video-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: -1;
+}
+
+#background-video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: translate(-50%, -50%);
+}
+
+/* Ensure content scrolls over the video */
+body {
+    overflow-y: auto;
+    position: relative;
+}
+
+/* Header Styling */
+header {
+    text-align: center;
+    padding: 5px 0;
+    background: rgba(0, 0, 0, 0.7); /* Semi-transparent background for header */
+    color: white; /* Changed to white */
+    font-size: 0.5em;
+    font-family: "Georgia", serif; /* Stylish font for the header */
+    font-weight: bold;
+}
+
+/* Navigation Styling */
+#toplist {
+    list-style-type: none;
+    padding: 5px 0;
+    margin: 0;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.6);
+}
+
+#toplist li {
+    display: inline;
+    margin: 0 15px;
+}
+
+#toplist a {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    font-size: 1.2em;
+    transition: color 0.3s, text-shadow 0.3s;
+}
+
+#toplist a:hover {
+    color: #ffcc00;
+    text-shadow: 0 0 5px #ffffff;
+}
+
+/* Section Styling */
+.about {
+    max-width: 800px;
+    margin: 50px auto;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* About Headings */
+.about h2 {
+    font-size: 1em;
+    margin-top: 20px;
+    color: white; /* Changed to white */
+    text-align: center;
+    font-family: "Georgia", serif; /* Stylish font for headings */
+}
+
+/* Paragraphs and List Items */
+.about p, .about li {
+    font-size: 1em;
+    line-height: 1.8;
+}
+
+.about ul {
+    padding-left: 20px;
+}
+
+.about ul li {
+    margin-bottom: 10px;
+}
+
+/* Link Styling within Content */
+.about a {
+    color: #ffcc00;
+    font-weight: bold;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.about a:hover {
+    color: #ffffff;
+    text-shadow: 0 0 5px #ffcc00;
+}
