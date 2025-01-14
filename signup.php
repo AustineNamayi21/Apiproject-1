@@ -1,59 +1,61 @@
 <?php
-// Database connection credentials
-$servername = "localhost";
-$dbUsername = "root";
-$dbPassword = "root";
-$dbName = "signup_details";
+// Include the required files
+include('dbconnection.php'); // Ensure this establishes a PDO connection as $conn
+include('mailer.php'); // Include the mailer functionality
 
 try {
-    // Establish a database connection
-    $conn = new PDO("mysql:host=$servername;dbname=$dbName", $dbUsername, $dbPassword);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Capture form data
-        $email = $_POST['email'] ?? null;
-        $username = $_POST['username'] ?? null;
-        $password = $_POST['password'] ?? null;
-        $phone = $_POST['phone'] ?? null;
+        $email = htmlspecialchars(trim($_POST['email'] ?? ''));
+        $username = htmlspecialchars(trim($_POST['username'] ?? ''));
+        $password = htmlspecialchars(trim($_POST['password'] ?? ''));
+        $phone = htmlspecialchars(trim($_POST['phone'] ?? ''));
 
         // Validate inputs
         if (empty($email) || empty($username) || empty($password) || empty($phone)) {
-            echo "All fields are required!";
-            exit();
+            die("All fields are required!");
         }
 
         // Hash the password
         $passwordHash = password_hash($password, PASSWORD_DEFAULT);
 
-        // Check if email exists
+        // Check if email already exists
         $checkStmt = $conn->prepare("SELECT email FROM userdata WHERE email = :email");
         $checkStmt->bindParam(':email', $email);
         $checkStmt->execute();
 
         if ($checkStmt->rowCount() > 0) {
-            echo "Email already exists!";
-        } else {
-            // Insert data
-            $insertStmt = $conn->prepare("
-                INSERT INTO userdata (email, username, password, phone) 
-                VALUES (:email, :username, :password, :phone)
-            ");
-            $insertStmt->bindParam(':email', $email);
-            $insertStmt->bindParam(':username', $username);
-            $insertStmt->bindParam(':password', $passwordHash);
-            $insertStmt->bindParam(':phone', $phone);
-            
-            if ($insertStmt->execute()) {
-                echo "Signup successful!";
-                header("Location: home.html");
+            die("Email already exists!");
+        }
+
+        // Insert the new user into the database
+        $insertStmt = $conn->prepare("
+            INSERT INTO userdata (email, username, password, phone, is_verified) 
+            VALUES (:email, :username, :password, :phone, 0)
+        ");
+        $insertStmt->bindParam(':email', $email);
+        $insertStmt->bindParam(':username', $username);
+        $insertStmt->bindParam(':password', $passwordHash);
+        $insertStmt->bindParam(':phone', $phone);
+
+        if ($insertStmt->execute()) {
+            // Generate and send OTP using the mailer
+            $auth = new TwoFactorAuth($conn);
+            $otp = $auth->updateOtp($email);
+
+            if ($auth->sendOtpEmail($email, $username, $otp)) {
+                header("Location: verification.php?email=" . urlencode($email));
                 exit();
             } else {
-                echo "Failed to insert data!";
+                die("Failed to send OTP email.");
             }
+        } else {
+            die("Failed to insert user data.");
         }
     }
 } catch (PDOException $e) {
-    echo "Error: " . $e->getMessage();
+    die("Database Error: " . $e->getMessage());
+} catch (Exception $e) {
+    die("Error: " . $e->getMessage());
 }
 ?>
