@@ -41,23 +41,42 @@ class OTPVerification {
     public function verifyAndClearOTP($email, $verificationCode) {
         $user = $this->getUserByEmail($email);
 
-        // Check if the OTP matches and is not expired
-        if ($user && $user['otp_code'] === $verificationCode && strtotime($user['otp_expiration']) > time()) {
-            // Mark the user as verified and clear the OTP fields
-            $stmt = $this->conn->prepare("
-                UPDATE userdata 
-                SET is_verified = 1, otp_code = NULL, otp_expiration = NULL 
-                WHERE email = :email
-            ");
-            $stmt->execute([':email' => $email]);
-            return true;
+        if ($user) {
+            // Debugging statements
+            error_log("User OTP: " . $user['otp_code']);
+            error_log("Entered OTP: " . $verificationCode);
+            error_log("Current Time: " . time());
+            error_log("OTP Expiration: " . strtotime($user['otp_expiration']));
+
+            if ($user['otp_code'] === $verificationCode && strtotime($user['otp_expiration']) > time()) {
+                // Mark the user as verified and clear the OTP
+                $stmt = $this->conn->prepare("
+                    UPDATE userdata 
+                    SET verified = 1, otp_code = NULL, otp_expiration = NULL 
+                    WHERE email = :email
+                ");
+                $stmt->execute([':email' => $email]);
+                return true;
+            }
         }
         return false;
+    }
+
+    public function insertUserData($email, $username, $password, $phone) {
+        $stmt = $this->conn->prepare("
+            INSERT INTO userdata (email, username, password, phone, verified)
+            VALUES (:email, :username, :password, :phone, 1)
+        ");
+        return $stmt->execute([
+            ':email' => $email,
+            ':username' => $username,
+            ':password' => password_hash($password, PASSWORD_DEFAULT), // Hash the password before storing
+            ':phone' => $phone,
+        ]);
     }
 }
 
 // Main Logic
-$error = null; // Initialize error variable
 if (isset($_GET['email'])) {
     $email = htmlspecialchars(trim($_GET['email']));
 
@@ -68,12 +87,19 @@ if (isset($_GET['email'])) {
 
         $otpVerification = new OTPVerification($conn);
         $verificationCode = htmlspecialchars(trim($_POST['verificationCode']));
+        $username = htmlspecialchars(trim($_POST['username']));
+        $password = htmlspecialchars(trim($_POST['password']));
+        $phone = htmlspecialchars(trim($_POST['phone']));
 
-        // Attempt to verify the OTP
         if ($otpVerification->verifyAndClearOTP($email, $verificationCode)) {
-            // Redirect to home.html on successful verification
-            header('Location: home.html');
-            exit;
+            // Insert user data into the database
+            if ($otpVerification->insertUserData($email, $username, $password, $phone)) {
+                // Redirect to the home page after successful verification and data insertion
+                header('Location: home.html');
+                exit;
+            } else {
+                $error = "Failed to insert user data into the database.";
+            }
         } else {
             $error = "Invalid or expired verification code.";
         }
@@ -145,12 +171,15 @@ if (isset($_GET['email'])) {
 <body>
     <div class="container">
         <h1>OTP Verification</h1>
-        <?php if ($error): ?>
+        <?php if (isset($error)): ?>
             <p class="error"><?php echo $error; ?></p>
         <?php endif; ?>
         <form method="POST">
             <label for="verificationCode">Enter the OTP sent to your email:</label>
             <input type="text" id="verificationCode" name="verificationCode" placeholder="Enter OTP" required>
+            <input type="hidden" id="username" name="username" value="<?php echo htmlspecialchars($_GET['username'] ?? ''); ?>">
+            <input type="hidden" id="password" name="password" value="<?php echo htmlspecialchars($_GET['password'] ?? ''); ?>">
+            <input type="hidden" id="phone" name="phone" value="<?php echo htmlspecialchars($_GET['phone'] ?? ''); ?>">
             <button type="submit">Verify</button>
         </form>
     </div>
