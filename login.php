@@ -1,19 +1,13 @@
 <?php
-// Database connection
-$servername = "localhost";
-$username = "root";
-$password = "root";
-$dbname = "signup_details";
+// Include the required files
+include('dbconnection.php'); // Ensure this establishes a PDO connection as $conn
+include('mailer.php'); // Include the mailer functionality
 
 try {
-    // Create a PDO connection
-    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Get the form input
-        $email = $_POST['email'];
-        $password = $_POST['password'];
+        $email = htmlspecialchars(trim($_POST['email']));
+        $password = htmlspecialchars(trim($_POST['password']));
 
         // Prepare the SQL statement to check for matching email
         $stmt = $conn->prepare("SELECT * FROM userdata WHERE email = :email");
@@ -26,10 +20,17 @@ try {
 
             // Verify the password
             if (password_verify($password, $user['password'])) {
-                echo "Login successful. Welcome, " . htmlspecialchars($user['username']) . "!";
-                // Redirect to a dashboard or homepage
-                header('Location: home.html');
-                exit();
+                // Generate and send OTP using the mailer
+                $auth = new TwoFactorAuth($conn);
+                $otp = $auth->updateOtp($email);
+
+                if ($auth->sendOtpEmail($email, $user['username'], $otp)) {
+                    // Redirect to the verification page
+                    header("Location: verification.php?email=" . urlencode($email));
+                    exit();
+                } else {
+                    echo "Failed to send OTP email.";
+                }
             } else {
                 echo "Incorrect password.";
             }
@@ -39,5 +40,8 @@ try {
     }
 } catch (PDOException $e) {
     echo "Connection failed: " . $e->getMessage();
+} catch (Exception $e) {
+    echo "Error: " . $e->getMessage();
 }
 ?>
+

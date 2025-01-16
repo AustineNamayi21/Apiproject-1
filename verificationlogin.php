@@ -1,119 +1,127 @@
 <?php
-session_start();
+header('Content-Type: text/html');
 
-class DatabaseConnection {
-    private $host;
-    private $dbname;
-    private $username;
-    private $password;
-    public $conn;
+// Database connection
+$host = 'localhost';
+$dbname = 'signup_details';
+$username = 'root';
+$password = 'root';
 
-    public function __construct($host, $dbname, $username, $password) {
-        $this->host = $host;
-        $this->dbname = $dbname;
-        $this->username = $username;
-        $this->password = $password;
-    }
-
-    public function connect() {
-        try {
-            $this->conn = new PDO("mysql:host={$this->host};dbname={$this->dbname};charset=utf8mb4", $this->username, $this->password);
-            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $this->conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-            return $this->conn;
-        } catch (PDOException $e) {
-            die("Database connection failed: " . $e->getMessage());
-        }
-    }
-}
-
-class OTPVerification {
-    private $conn;
-
-    public function __construct($conn) {
-        $this->conn = $conn;
-    }
-
-    public function getUserById($userId) {
-        $stmt = $this->conn->prepare("SELECT * FROM users WHERE id = :id");
-        $stmt->execute([':id' => $userId]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
-
-    public function verifyOTP($userId, $verificationCode) {
-        $user = $this->getUserById($userId);
-
-        if ($user && $user['otp_code'] === $verificationCode && strtotime($user['otp_expiration']) > time()) {
-            $this->clearOTP($userId);
-            return true;
-        }
-        return false;
-    }
-
-    public function clearOTP($userId) {
-        $stmt = $this->conn->prepare("UPDATE users SET otp_code = NULL, otp_expiration = NULL WHERE id = :id");
-        $stmt->execute([':id' => $userId]);
-    }
-}
-
-// Main Logic
-if (!isset($_SESSION['user_id'])) {
-    header('Location: login_process.php');
-    exit();
-}
+$response = null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $dbConnection = new DatabaseConnection('localhost', 'assignmentii', 'root', '');
-    $conn = $dbConnection->connect();
+    try {
+        $conn = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
+        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    $otpVerification = new OTPVerification($conn);
-    $verificationCode = htmlspecialchars(trim($_POST['verification_code']));
-    $userId = $_SESSION['user_id'];
+        $otpCode = trim($_POST['otpCode'] ?? '');
 
-    if ($otpVerification->verifyOTP($userId, $verificationCode)) {
-        header('Location: dashboard_login.php');
-        exit();
-    } else {
-        $error = "Invalid or expired verification code.";
+        if (empty($otpCode)) {
+            $response = ['success' => false, 'message' => 'OTP code is required.'];
+        } else {
+            // Fetch user with matching OTP
+            $stmt = $conn->prepare("
+                SELECT * FROM userdata 
+                WHERE otp_code = :otp_code 
+                AND otp_expiration > NOW()
+            ");
+            $stmt->bindParam(':otp_code', $otpCode);
+            $stmt->execute();
+
+            if ($stmt->rowCount() > 0) {
+                // Mark user as verified
+                $user = $stmt->fetch(PDO::FETCH_ASSOC);
+                $updateStmt = $conn->prepare("
+                    UPDATE userdata 
+                    SET verified = 1, otp_code = NULL, otp_expiration = NULL 
+                    WHERE user_id = :user_id
+                ");
+                $updateStmt->bindParam(':user_id', $user['user_id']);
+                $updateStmt->execute();
+
+                $response = ['success' => true, 'message' => 'Verification successful!'];
+            } else {
+                $response = ['success' => false, 'message' => 'Invalid or expired OTP.'];
+            }
+        }
+    } catch (PDOException $e) {
+        $response = ['success' => false, 'message' => 'Database error: ' . $e->getMessage()];
     }
 }
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verify Account</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>OTP Verification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            text-align: center;
+        }
+        input {
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 100%;
+        }
+        button {
+            padding: 10px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            width: 100%;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .error {
+            color: red;
+            margin-bottom: 10px;
+        }
+        .success {
+            color: green;
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 <body>
-    <div class="container d-flex justify-content-center align-items-center vh-100">
-        <div class="card p-4 shadow-lg" style="max-width: 400px; width: 100%;">
-            <h3 class="text-center mb-4">Verify Your Account</h3>
-            <p class="text-muted text-center mb-4">
-                Enter the 6-digit code sent to your email to verify your account.
+    <div class="container">
+        <h1>OTP Verification</h1>
+        <?php if ($response): ?>
+            <p class="<?php echo $response['success'] ? 'success' : 'error'; ?>">
+                <?php echo htmlspecialchars($response['message']); ?>
             </p>
-            <form action="verification_login.php" method="POST">
-                <div class="mb-3">
-                    <label for="verificationCode" class="form-label">Verification Code</label>
-                    <input type="text" id="verificationCode" name="verification_code" 
-                           class="form-control" placeholder="Enter code" required>
-                </div>
-                <div class="d-grid">
-                    <button type="submit" class="btn btn-primary">Verify</button>
-                </div>
-                <div class="text-center mt-3">
-                    <a href="resend_code.php" class="text-decoration-none">Resend Code</a>
-                </div>
-            </form>
-        </div>
+            <?php if ($response['success']): ?>
+                <script>
+                    setTimeout(() => {
+                        window.location.href = 'home.html';
+                    }, 2000);
+                </script>
+            <?php endif; ?>
+        <?php endif; ?>
+        <form method="POST">
+            <input type="text" name="otpCode" placeholder="Enter OTP" required>
+            <button type="submit">Verify OTP</button>
+        </form>
     </div>
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-
