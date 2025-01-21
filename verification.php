@@ -59,7 +59,7 @@ try {
 
         if ($updateStmt->execute()) {
             $_SESSION['success'] = "Your account has been successfully verified.";
-            header("Location: home.html");
+            header("Location: search.html");
             exit();
         } else {
             $_SESSION['error'] = "Failed to verify your account. Please try again.";

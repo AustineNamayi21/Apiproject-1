@@ -40,7 +40,7 @@ try {
             
             if ($insertStmt->execute()) {
                 echo "Signup successful!";
-                header("Location: home.html");
+                header("Location: search.html");
                 exit();
             } else {
                 echo "Failed to insert data!";
