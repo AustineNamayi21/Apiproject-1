@@ -1,0 +1,82 @@
+/* General Body Styling */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+/* Container Styling */
+.container {
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px 30px;
+}
+
+/* Header Styling */
+h1 {
+    color: #007bff;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* Form Fields */
+form .form-control,
+form .form-select {
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    transition: all 0.3s;
+}
+
+form .form-control:focus,
+form .form-select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* Buttons */
+form .btn-primary {
+    background-color: #007bff;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+form .btn-primary:hover {
+    background-color: #0056b3;
+    color: #fff;
+}
+
+/* Filter Section */
+form .row {
+    align-items: center;
+    gap: 10px;
+}
+
+form .row > .col-md-3 {
+    margin-bottom: 10px;
+}
+
+/* Results Section */
+#results {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 6px;
+    background-color: #f0f8ff;
+    border: 1px dashed #007bff;
+    min-height: 50px;
+    text-align: center;
+    color: #555;
+}
+
+/* Placeholder Styling */
+#results::before {
+    content: "Search results will appear here";
+    color: #aaa;
+    font-style: italic;
+}
