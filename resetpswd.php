@@ -6,14 +6,14 @@ if (isset($_GET["token"])) {
     $token = $_GET["token"];
 
     // Validate the token
-    $stmt = $connect->prepare("SELECT * FROM userdata WHERE token = ? AND token_expiry > NOW()");
+    $stmt = $connect->prepare("SELECT * FROM userdata WHERE token = ?");
     $stmt->bind_param("s", $token);
     $stmt->execute();
     $result = $stmt->get_result();
     $user = $result->fetch_assoc();
 
     if (!$user) {
-        echo "<script>alert('Invalid or expired token.');</script>";
+        echo "<script>alert('Invalid token.');</script>";
         exit();
     }
 
@@ -21,7 +21,7 @@ if (isset($_GET["token"])) {
         $new_password = password_hash($_POST["password"], PASSWORD_BCRYPT);
 
         // Update the password and clear the token
-        $update_stmt = $connect->prepare("UPDATE userdata SET password = ?, token = NULL, token_expiry = NULL WHERE token = ?");
+        $update_stmt = $connect->prepare("UPDATE userdata SET password = ?, token = NULL WHERE token = ?");
         $update_stmt->bind_param("ss", $new_password, $token);
         if ($update_stmt->execute()) {
             echo "<script>alert('Password reset successful.'); window.location.replace('login.php');</script>";

@@ -29,11 +29,10 @@ if (isset($_POST["recover"])) {
     } else {
         // Generate a secure token
         $token = bin2hex(random_bytes(50));
-        $expiry = date("Y-m-d H:i:s", strtotime("+1 hour")); // Token valid for 1 hour
 
-        // Store token and expiry in the database
-        $update_stmt = $connect->prepare("UPDATE userdata SET token = ?, token_expiry = ? WHERE email = ?");
-        $update_stmt->bind_param("sss", $token, $expiry, $email);
+        // Store the token in the database
+        $update_stmt = $connect->prepare("UPDATE userdata SET token = ? WHERE email = ?");
+        $update_stmt->bind_param("ss", $token, $email);
         if ($update_stmt->execute()) {
             // Send reset email
             $mail = new PHPMailer(true);
@@ -73,7 +72,6 @@ if (isset($_POST["recover"])) {
     }
 }
 ?>
-
 <!doctype html>
 <html lang="en">
 <head>
