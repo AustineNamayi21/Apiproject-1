@@ -1,6 +1,6 @@
 <?php
 // Include the required files
-include('dbconnection.php'); // Ensure this establishes a PDO connection as $conn
+include('connect.php'); // Ensure this establishes a PDO connection as $conn
 session_start();
 
 try {

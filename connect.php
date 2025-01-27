@@ -2,15 +2,14 @@
 $servername = "localhost";
 $username = "root";
 $password = "root";
-$dbname = "signup_details";
 
-// Create connection
-$connect = new mysqli($servername, $username, $password, $dbname);
-
-// Check connection
-if ($connect->connect_error) {
-    die("Connection failed: " . $connect->connect_error);
-} else {
-    echo "Connected successfully";
+try {
+    // Creating the database connection
+    $conn = new PDO("mysql:host=$servername;dbname=signup_details", $username, $password);
+    // Set the PDO error mode to exception
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    echo "Connected successfully<br>";
+} catch(PDOException $e) {
+    echo "Connection failed: " . $e->getMessage();
 }
 ?>

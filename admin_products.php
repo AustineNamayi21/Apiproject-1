@@ -37,6 +37,10 @@ try {
                         <input type="text" id="name" name="name" class="form-control" required>
                     </div>
                     <div class="mb-3">
+                        <label for="brand" class="form-label">Brand:</label>
+                        <input type="text" id="brand" name="brand" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
                         <label for="description" class="form-label">Description:</label>
                         <textarea id="description" name="description" class="form-control" required></textarea>
                     </div>
@@ -75,6 +79,7 @@ try {
                 <tr>
                     <th>ID</th>
                     <th>Name</th>
+                    <th>Brand</th>
                     <th>Description</th>
                     <th>Price</th>
                     <th>Category</th>
@@ -89,6 +94,7 @@ try {
                         <tr>
                             <td><?php echo $product['product_id']; ?></td>
                             <td><?php echo htmlspecialchars($product['name']); ?></td>
+                            <td><?php echo htmlspecialchars($product['brand']); ?></td>
                             <td><?php echo htmlspecialchars($product['description']); ?></td>
                             <td>$<?php echo number_format($product['price'], 2); ?></td>
                             <td><?php echo htmlspecialchars($product['category']); ?></td>
@@ -104,7 +110,7 @@ try {
                     <?php endforeach; ?>
                 <?php else: ?>
                     <tr>
-                        <td colspan="8" class="text-center">No products found.</td>
+                        <td colspan="9" class="text-center">No products found.</td>
                     </tr>
                 <?php endif; ?>
             </tbody>

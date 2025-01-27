@@ -1,7 +1,7 @@
 <?php
 // Include the database connection file
-include('dbconnection.php'); // Ensure this file establishes a PDO connection and assigns it to `$conn`
-require 'vendor/autoload.php'; // Include PHPMailer's autoloader if using Composer
+include('connect.php'); // Ensure this file defines the $conn variable
+require 'vendor/autoload.php'; // Include PHPMailer's autoloader
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -15,7 +15,7 @@ class TwoFactorAuth {
 
     // Sanitize user input
     public function sanitizeInput($input) {
-        return htmlspecialchars(trim($input));
+        return htmlspecialchars(trim($input ?? ''));
     }
 
     // Generate OTP
@@ -55,8 +55,8 @@ class TwoFactorAuth {
             $mail->isSMTP();
             $mail->Host       = 'smtp.gmail.com';
             $mail->SMTPAuth   = true;
-            $mail->Username   = 'austinamayi254@gmail.com'; // Replace with your SMTP email
-            $mail->Password   = 'zwdzbkmscvbpqthh';  // Replace with your SMTP app password
+            $mail->Username   = 'austinamayi254@gmail.com'; // Your email
+            $mail->Password   = 'dnnrwudmrzshxqgq';         // Your app password
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
             $mail->Port       = 465;
 
@@ -80,6 +80,11 @@ class TwoFactorAuth {
 
 // Main logic
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Ensure $conn is defined and passed
+    if (!isset($conn)) {
+        die("Database connection is not initialized.");
+    }
+
     $auth = new TwoFactorAuth($conn);
 
     // Sanitize input

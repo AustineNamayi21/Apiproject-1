@@ -1,6 +1,6 @@
 <?php
 // Include the required files
-include('dbconnection.php'); // Ensure this establishes a PDO connection as $conn
+include('connect.php'); // Ensure this establishes a PDO connection as $conn
 include('mailer.php'); // Include the mailer functionality
 
 try {
@@ -44,4 +44,3 @@ try {
     echo "Error: " . $e->getMessage();
 }
 ?>
-
