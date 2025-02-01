@@ -1,32 +1,54 @@
 <?php
 session_start();
-include('connect.php');
+
+// Ensure database connection is included
+include('connectdb.php');
+
+if (!isset($connect) || $connect->connect_error) {
+    die("Database connection failed: " . ($connect->connect_error ?? "Unknown error"));
+}
 
 if (isset($_GET["token"])) {
     $token = $_GET["token"];
 
     // Validate the token
     $stmt = $connect->prepare("SELECT * FROM userdata WHERE token = ?");
+    if (!$stmt) {
+        die("Database error: " . $connect->error);
+    }
+
     $stmt->bind_param("s", $token);
     $stmt->execute();
     $result = $stmt->get_result();
     $user = $result->fetch_assoc();
 
     if (!$user) {
-        echo "<script>alert('Invalid token.');</script>";
+        echo "<script>alert('Invalid token.'); window.location.replace('forgotpassword.php');</script>";
         exit();
     }
 
     if (isset($_POST["reset_password"])) {
-        $new_password = password_hash($_POST["password"], PASSWORD_BCRYPT);
+        $new_password = $_POST["password"];
+        $confirm_password = $_POST["confirm_password"];
 
-        // Update the password and clear the token
-        $update_stmt = $connect->prepare("UPDATE userdata SET password = ?, token = NULL WHERE token = ?");
-        $update_stmt->bind_param("ss", $new_password, $token);
-        if ($update_stmt->execute()) {
-            echo "<script>alert('Password reset successful.'); window.location.replace('login.php');</script>";
+        if ($new_password !== $confirm_password) {
+            echo "<script>alert('Passwords do not match.');</script>";
         } else {
-            echo "<script>alert('Error resetting password. Please try again.');</script>";
+            $hashed_password = password_hash($new_password, PASSWORD_BCRYPT);
+
+            // Update password and clear token
+            $update_stmt = $connect->prepare("UPDATE userdata SET password = ?, token = NULL WHERE token = ?");
+            if (!$update_stmt) {
+                die("Database error: " . $connect->error);
+            }
+
+            $update_stmt->bind_param("ss", $hashed_password, $token);
+            if ($update_stmt->execute()) {
+                echo "<script>alert('Password reset successful. Please login.'); window.location.replace('login.php');</script>";
+                exit();
+            } else {
+                echo "<script>alert('Error resetting password. Please try again.');</script>";
+            }
         }
     }
 } else {
@@ -61,6 +83,10 @@ if (isset($_GET["token"])) {
                             <div class="form-group">
                                 <label for="password">New Password</label>
                                 <input type="password" id="password" name="password" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="confirm_password">Confirm New Password</label>
+                                <input type="password" id="confirm_password" name="confirm_password" class="form-control" required>
                             </div>
                             <button type="submit" name="reset_password" class="btn btn-primary btn-block">Reset Password</button>
                         </form>

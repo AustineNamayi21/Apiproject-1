@@ -1,6 +1,6 @@
 <?php
 session_start();
-include('connect.php');
+include('connectdb.php');
 require 'vendor/autoload.php'; // Include PHPMailer's autoloader if using Composer
 
 use PHPMailer\PHPMailer\PHPMailer;
@@ -42,11 +42,11 @@ if (isset($_POST["recover"])) {
                 $mail->Host = 'smtp.gmail.com';
                 $mail->SMTPAuth = true;
                 $mail->Username = 'austinamayi254@gmail.com'; // Your email
-                $mail->Password = 'gtidpaprmvzuaxxf'; // Your email password or app password
+                $mail->Password = 'rmhaynrmyyvmfsym'; // Your email password or app password
                 $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
                 $mail->Port = 465;
 
-                $mail->setFrom('austinamayi254@gmail.com', 'passwordreset');
+                $mail->setFrom('austinamayi254@gmail.com', 'resetpassword');
                 $mail->addAddress($email);
 
                 $mail->isHTML(true);

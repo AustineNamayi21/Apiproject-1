@@ -1,42 +1,29 @@
 <?php
-session_start();
-include('dbconnection.php');
+session_start(); // Start session
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $product_id = $_POST['product_id'];
-    $quantity = $_POST['quantity'];
+    $productId = $_POST['product_id'];
+    $productName = $_POST['product_name'];
+    $productPrice = $_POST['product_price'];
 
-    try {
-        // Fetch product details
-        $stmt = $conn->prepare("SELECT * FROM products WHERE product_id = :product_id");
-        $stmt->execute([':product_id' => $product_id]);
-        $product = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if (!$product) {
-            die("Product not found.");
-        }
-
-        // Initialize cart if not already set
-        if (!isset($_SESSION['cart'])) {
-            $_SESSION['cart'] = [];
-        }
-
-        // Add or update product in cart
-        if (isset($_SESSION['cart'][$product_id])) {
-            // Update quantity if product exists in cart
-            $_SESSION['cart'][$product_id]['quantity'] += $quantity;
-        } else {
-            // Add product to cart
-            $_SESSION['cart'][$product_id] = [
-                'name' => $product['name'],
-                'price' => $product['price'],
-                'quantity' => $quantity
-            ];
-        }
-
-        echo "Product added to cart successfully!";
-    } catch (Exception $e) {
-        echo "Error: " . $e->getMessage();
+    // Initialize the cart if it doesn't exist
+    if (!isset($_SESSION['cart'])) {
+        $_SESSION['cart'] = [];
     }
+
+    // Check if the product is already in the cart
+    if (isset($_SESSION['cart'][$productId])) {
+        $_SESSION['cart'][$productId]['quantity'] += 1; // Increment quantity
+    } else {
+        // Add new product to the cart
+        $_SESSION['cart'][$productId] = [
+            'name' => $productName,
+            'price' => $productPrice,
+            'quantity' => 1
+        ];
+    }
+
+    // Return success message
+    echo json_encode(['message' => 'Product added to cart successfully!']);
 }
 ?>
