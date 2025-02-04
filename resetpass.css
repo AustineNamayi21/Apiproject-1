@@ -1,0 +1,82 @@
+/* General Styles */
+body {
+    background-color: #eef2f7;
+    font-family: 'Poppins', sans-serif;
+    color: #333;
+}
+
+/* Navbar */
+.navbar {
+    background-color: #001730 !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.navbar-brand {
+    color: #fff !important;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+/* Form Container */
+.login-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.card {
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+    background: #fff;
+}
+
+.card-header {
+    background: #011831;
+    color: #fff;
+    font-size: 1.3rem;
+    text-align: center;
+    font-weight: bold;
+    border-radius: 10px 10px 0 0;
+    padding: 15px;
+}
+
+/* Form Styling */
+.form-group label {
+    font-weight: bold;
+    color: #555;
+}
+
+.form-control {
+    border-radius: 8px;
+    border: 1px solid #bbb;
+    transition: all 0.3s ease-in-out;
+    padding: 12px;
+}
+
+.form-control:focus {
+    border-color: #011c39;
+    box-shadow: 0px 0px 8px rgba(0, 86, 179, 0.3);
+}
+
+/* Submit Button */
+.btn-primary {
+    background-color: #011831;
+    border-color: #011225;
+    font-size: 1.2rem;
+    font-weight: bold;
+    transition: all 0.3s ease-in-out;
+    padding: 12px;
+    border-radius: 8px;
+}
+
+.btn-primary:hover {
+    background-color: #011428;
+    border-color: #01132c;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .col-md-6 {
+        width: 100%;
+    }
+}
