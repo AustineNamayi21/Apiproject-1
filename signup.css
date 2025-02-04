@@ -5,7 +5,7 @@ body, html {
     width: 100%;
     height: 100%;
     font-family: 'Arial', sans-serif;
-    background: url('https://images.samsung.com/africa_en/smartphones/galaxy-s25-ultra/images/galaxy-s25-ultra-features-provisual-engine-spec-rear.png?imbypass=true') no-repeat center center fixed;
+    background: url('https://images.samsung.com/is/image/samsung/p6pim/africa_en/feature/165641337/africa_en-feature--nbsp-543688634?$1204_n_JPG$') no-repeat center center fixed;
     background-size: cover;
     overflow-x: hidden;
     display: flex;
@@ -13,11 +13,11 @@ body, html {
     align-items: center;
 }
 
-/* Navigation Bar Styling */
+/* Enhanced Navigation Bar Styling */
 #toplist {
     display: flex;
-    justify-content: center;
-    text-align: center;
+    justify-content: space-between; /* Spread items from left to right */
+    align-items: center; /* Center items vertically */
     list-style: none;
     padding: 10px 20px;
     margin: 0;
@@ -25,10 +25,11 @@ body, html {
     border-radius: 10px;
     position: fixed;
     top: 10px;
-    width: 95%;
+    left: 10px; /* Position from the left */
+    right: 10px; /* Position from the right */
     z-index: 3;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(10px); /* Adds a blur effect for a modern look */
+    backdrop-filter: blur(10px);
 }
 
 #toplist li {
@@ -46,7 +47,13 @@ body, html {
     color: #007bff;
 }
 
-/* Signup Form Styling */
+/* Center the characters in the navigation bar */
+#toplist li {
+    flex: 1; /* Distribute space evenly */
+    text-align: center; /* Center text horizontally */
+}
+
+/* Signup Form Styling (unchanged) */
 .signup-container {
     max-width: 400px;
     margin: 20px auto;
@@ -55,7 +62,7 @@ body, html {
     border-radius: 15px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
     text-align: center;
-    animation: fadeIn 0.5s ease-in-out; /* Fade-in animation */
+    animation: fadeIn 0.5s ease-in-out;
 }
 
 @keyframes fadeIn {
@@ -69,7 +76,7 @@ body, html {
     }
 }
 
-/* Form Fields */
+/* Form Fields (unchanged) */
 .signup-container .form-control {
     width: 100%;
     padding: 12px;
@@ -86,7 +93,7 @@ body, html {
     outline: none;
 }
 
-/* Submit Button */
+/* Submit Button (unchanged) */
 .signup-container .btn-primary {
     width: 100%;
     background-color: #007bff;
@@ -101,14 +108,14 @@ body, html {
 
 .signup-container .btn-primary:hover {
     background-color: #0056b3;
-    transform: translateY(-2px); /* Slight lift effect on hover */
+    transform: translateY(-2px);
 }
 
 .signup-container .btn-primary:active {
-    transform: translateY(0); /* Reset lift effect on click */
+    transform: translateY(0);
 }
 
-/* Additional Text Styling */
+/* Additional Text Styling (unchanged) */
 .signup-container h2 {
     margin-bottom: 20px;
     font-size: 24px;
@@ -139,8 +146,7 @@ body, html {
     }
 
     #toplist {
-        flex-direction: column;
-        text-align: center;
+        flex-direction: row; /* Keep items in a row */
         padding: 10px;
     }
 
