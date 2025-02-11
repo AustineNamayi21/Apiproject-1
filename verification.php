@@ -1,10 +1,45 @@
 <?php
-// Include the required files
-include('connect.php'); // Ensure this establishes a PDO connection as $conn
 session_start();
+include('connect.php'); // Establish PDO connection as $conn
+
+/**
+ * Function to validate OTP
+ */
+function validateOtp($email, $otp_code, $conn) {
+    try {
+        // Retrieve OTP and expiration from the database
+        $stmt = $conn->prepare("
+            SELECT otp_code, otp_expiration 
+            FROM userdata 
+            WHERE email = :email
+        ");
+        $stmt->bindParam(':email', $email);
+        $stmt->execute();
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$user) {
+            return "No account found with the provided email.";
+        }
+
+        // Validate OTP
+        $current_time = new DateTime();
+        $otp_expiration = new DateTime($user['otp_expiration']);
+
+        if ($user['otp_code'] !== $otp_code) {
+            return "Invalid OTP code. Please try again.";
+        }
+        if ($current_time > $otp_expiration) {
+            return "OTP code has expired. Please request a new one.";
+        }
+
+        return null; // No errors
+    } catch (Exception $e) {
+        error_log("OTP validation error: " . $e->getMessage());
+        return "An unexpected error occurred. Please try again.";
+    }
+}
 
 try {
-    // Check if the form is submitted
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Sanitize user inputs
         $email = htmlspecialchars(trim($_POST['email'] ?? ''));
@@ -17,34 +52,10 @@ try {
             exit();
         }
 
-        // Retrieve the user's OTP and expiration from the database
-        $stmt = $conn->prepare("
-            SELECT otp_code, otp_expiration 
-            FROM userdata 
-            WHERE email = :email
-        ");
-        $stmt->bindParam(':email', $email);
-        $stmt->execute();
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if (!$user) {
-            $_SESSION['error'] = "No account found with the provided email.";
-            header("Location: verification.php");
-            exit();
-        }
-
         // Validate OTP
-        $current_time = new DateTime();
-        $otp_expiration = new DateTime($user['otp_expiration']);
-
-        if ($user['otp_code'] !== $otp_code) {
-            $_SESSION['error'] = "Invalid OTP code. Please try again.";
-            header("Location: verification.php?email=" . urlencode($email));
-            exit();
-        }
-
-        if ($current_time > $otp_expiration) {
-            $_SESSION['error'] = "OTP code has expired. Please request a new one.";
+        $error = validateOtp($email, $otp_code, $conn);
+        if ($error) {
+            $_SESSION['error'] = $error;
             header("Location: verification.php?email=" . urlencode($email));
             exit();
         }
@@ -58,14 +69,35 @@ try {
         $updateStmt->bindParam(':email', $email);
 
         if ($updateStmt->execute()) {
-            $_SESSION['success'] = "Your account has been successfully verified.";
-            header("Location: search.html");
-            exit();
+            // Regenerate session ID for security
+            session_regenerate_id(true);
+
+            // Ensure user_id is still set in the session
+            $stmt = $conn->prepare("SELECT user_id FROM userdata WHERE email = :email");
+            $stmt->bindParam(':email', $email);
+            $stmt->execute();
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($user) {
+                $_SESSION['user_id'] = $user['user_id'];
+                $_SESSION['success'] = "Your account has been successfully verified.";
+                header("Location: search.html");
+                exit();
+            } else {
+                $_SESSION['error'] = "Failed to retrieve user ID. Please log in again.";
+                header("Location: login.php");
+                exit();
+            }
         } else {
             $_SESSION['error'] = "Failed to verify your account. Please try again.";
             header("Location: verification.php?email=" . urlencode($email));
             exit();
         }
+    } elseif (!isset($_GET['email']) || empty($_GET['email'])) {
+        // Redirect to login if no email is provided
+        $_SESSION['error'] = "Email not provided. Please log in again.";
+        header("Location: login.php");
+        exit();
     }
 } catch (PDOException $e) {
     $_SESSION['error'] = "Database error: " . $e->getMessage();

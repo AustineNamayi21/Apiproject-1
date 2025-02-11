@@ -1,46 +1,74 @@
 <?php
-// Include the required files
-include('connect.php'); // Ensure this establishes a PDO connection as $conn
-include('mailer.php'); // Include the mailer functionality
+session_start();
+include('connect.php'); // Establish PDO connection as $conn
+include('mailer.php'); // Include mailer functionality
 
 try {
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        // Get the form input
-        $email = htmlspecialchars(trim($_POST['email']));
-        $password = htmlspecialchars(trim($_POST['password']));
+        // Get and sanitize form input
+        $email = trim($_POST['email']);
+        $password = trim($_POST['password']);
 
-        // Prepare the SQL statement to check for matching email
+        // Validate email
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $_SESSION['error'] = "Invalid email format.";
+            header("Location: login.php");
+            exit();
+        }
+
+        // Check if user exists
         $stmt = $conn->prepare("SELECT * FROM userdata WHERE email = :email");
         $stmt->bindParam(':email', $email);
         $stmt->execute();
 
         if ($stmt->rowCount() > 0) {
-            // Fetch the user data
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            // Verify the password
+            // Verify password
             if (password_verify($password, $user['password'])) {
-                // Generate and send OTP using the mailer
+                // Regenerate session ID for security
+                session_regenerate_id(true);
+
+                // Store user details in the session
+                $_SESSION['user_id'] = $user['user_id'];
+                $_SESSION['username'] = $user['username'];
+                $_SESSION['email'] = $user['email'];
+
+                // Log successful login
+                error_log("Login successful for user ID: " . $_SESSION['user_id']);
+
+                // Generate and send OTP
                 $auth = new TwoFactorAuth($conn);
                 $otp = $auth->updateOtp($email);
-
                 if ($auth->sendOtpEmail($email, $user['username'], $otp)) {
                     // Redirect to the verification page
                     header("Location: verification.php?email=" . urlencode($email));
                     exit();
                 } else {
-                    echo "Failed to send OTP email.";
+                    $_SESSION['error'] = "Failed to send OTP email.";
+                    header("Location: login.php");
+                    exit();
                 }
             } else {
-                echo "Incorrect password.";
+                $_SESSION['error'] = "Incorrect password.";
+                header("Location: login.php");
+                exit();
             }
         } else {
-            echo "No account found with that email.";
+            $_SESSION['error'] = "No account found with that email.";
+            header("Location: login.php");
+            exit();
         }
     }
 } catch (PDOException $e) {
-    echo "Connection failed: " . $e->getMessage();
+    error_log("Database connection failed: " . $e->getMessage());
+    $_SESSION['error'] = "Connection failed. Please try again.";
+    header("Location: login.php");
+    exit();
 } catch (Exception $e) {
-    echo "Error: " . $e->getMessage();
+    error_log("An unexpected error occurred: " . $e->getMessage());
+    $_SESSION['error'] = "An error occurred. Please try again.";
+    header("Location: login.php");
+    exit();
 }
 ?>
