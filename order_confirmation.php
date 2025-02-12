@@ -45,6 +45,13 @@ try {
     <link rel="stylesheet" href="orderconfirmation.css">
 </head>
 <body>
+
+<div class="container mt-5">
+        <!-- Logout Button -->
+        <div class="text-end mb-4">
+            <a href="logout.php" class="btn btn-danger">Logout</a>
+        </div>
+
     <div class="container mt-5">
         <h1 class="text-center">Order Confirmation</h1>
         <?php if ($order): ?>

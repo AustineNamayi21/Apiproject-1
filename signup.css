@@ -40,11 +40,12 @@ body, html {
     text-decoration: none;
     color: #333;
     font-weight: bold;
-    transition: color 0.3s ease;
+    transition: color 0.3s ease, transform 0.3s ease;
 }
 
 #toplist a:hover {
-    color: #007bff;
+    color: #011327;
+    transform: scale(1.1);
 }
 
 /* Center the characters in the navigation bar */
@@ -85,10 +86,11 @@ body, html {
     border-radius: 8px;
     font-size: 14px;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .signup-container .form-control:focus {
-    border-color: #007bff;
+    border-color: #010f1e;
     box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
     outline: none;
 }
@@ -96,7 +98,7 @@ body, html {
 /* Submit Button (unchanged) */
 .signup-container .btn-primary {
     width: 100%;
-    background-color: #007bff;
+    background-color: #02172d;
     border: none;
     border-radius: 8px;
     padding: 12px;
@@ -107,7 +109,7 @@ body, html {
 }
 
 .signup-container .btn-primary:hover {
-    background-color: #0056b3;
+    background-color: #02162c;
     transform: translateY(-2px);
 }
 
@@ -129,13 +131,13 @@ body, html {
 }
 
 .signup-container a {
-    color: #007bff;
+    color: #011831;
     text-decoration: none;
     transition: color 0.3s ease;
 }
 
 .signup-container a:hover {
-    color: #0056b3;
+    color: #011428;
 }
 
 /* Mobile Responsiveness */
@@ -146,7 +148,7 @@ body, html {
     }
 
     #toplist {
-        flex-direction: row; /* Keep items in a row */
+        flex-direction: column; /* Stack items vertically */
         padding: 10px;
     }
 
