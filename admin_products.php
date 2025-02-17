@@ -1,4 +1,13 @@
 <?php
+session_start(); // Start the session
+
+// Check if the admin is logged in
+if (!isset($_SESSION['id']) || empty($_SESSION['id'])) {
+    $_SESSION['error'] = "You must be logged in as an admin to access this page.";
+    header("Location: admin_login.php");
+    exit();
+}
+
 // Include database connection
 include('dbconnection.php');
 
@@ -25,6 +34,30 @@ try {
 <body>
     <div class="container mt-5">
         <h1 class="text-center mb-4">Product Management</h1>
+
+        <!-- Display Success/Error Messages -->
+        <?php if (isset($_SESSION['success'])): ?>
+            <div class="alert alert-success"><?php echo htmlspecialchars($_SESSION['success']); ?></div>
+            <?php unset($_SESSION['success']); ?>
+        <?php elseif (isset($_SESSION['error'])): ?>
+            <div class="alert alert-danger"><?php echo htmlspecialchars($_SESSION['error']); ?></div>
+            <?php unset($_SESSION['error']); ?>
+        
+        
+            <?php endif; ?>
+        <div class="content">
+            <ol id="toplist">
+                
+                <li class="left"><a href="users.php">User management</a></li>
+                <li class="right"><a href="orders.php">Orders</a></li>
+                <li class="right"><a href="analytics.php">Analytics</a></li>
+            </ol>
+            <h1><strong></strong>Austine's Tech City Kenya</strong></h1>
+        </div>
+
+
+
+
 
         <!-- Add Product Form -->
         <div class="card mb-4">
@@ -66,13 +99,6 @@ try {
             </div>
         </div>
 
-        <!-- Success/Error Messages -->
-        <?php if (isset($_GET['success'])): ?>
-            <div class="alert alert-success"><?php echo htmlspecialchars($_GET['success']); ?></div>
-        <?php elseif (isset($_GET['error'])): ?>
-            <div class="alert alert-danger"><?php echo htmlspecialchars($_GET['error']); ?></div>
-        <?php endif; ?>
-
         <!-- Products Table -->
         <h2 class="mt-4 mb-3">All Products</h2>
         <table class="table table-bordered table-striped">
@@ -93,19 +119,19 @@ try {
                 <?php if (count($products) > 0): ?>
                     <?php foreach ($products as $product): ?>
                         <tr>
-                            <td><?php echo $product['product_id']; ?></td>
+                            <td><?php echo htmlspecialchars($product['product_id']); ?></td>
                             <td><?php echo htmlspecialchars($product['name']); ?></td>
                             <td><?php echo htmlspecialchars($product['brand']); ?></td>
                             <td><?php echo htmlspecialchars($product['description']); ?></td>
                             <td>$<?php echo number_format($product['price'], 2); ?></td>
                             <td><?php echo htmlspecialchars($product['category']); ?></td>
-                            <td><?php echo $product['quantity']; ?></td>
+                            <td><?php echo htmlspecialchars($product['quantity']); ?></td>
                             <td>
                                 <img src="<?php echo htmlspecialchars($product['image_url']); ?>" alt="Product Image" style="width: 100px;">
                             </td>
                             <td>
-                                <a href="edit_product.php?id=<?php echo $product['product_id']; ?>" class="btn btn-warning btn-sm">Edit</a>
-                                <a href="delete_product.php?id=<?php echo $product['product_id']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this product?');">Delete</a>
+                                <a href="edit_product.php?id=<?php echo htmlspecialchars($product['product_id']); ?>" class="btn btn-warning btn-sm">Edit</a>
+                                <a href="delete_product.php?id=<?php echo htmlspecialchars($product['product_id']); ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this product?');">Delete</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>
