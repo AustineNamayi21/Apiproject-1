@@ -58,6 +58,9 @@ try {
         <li class="right" style="display: inline; padding: 10px 15px; background-color:rgb(118, 5, 16); border-radius: 5px;">
             <a href="analytics.php" style="color: white; text-decoration: none; font-weight: bold;">Analytics</a>
         </li>
+        <li class="right" style="display: inline; padding: 10px 15px; background-color:rgb(118, 107, 5); border-radius: 5px;">
+            <a href="admin_logout.php" style="color: white; text-decoration: none; font-weight: bold;">Log out</a>
+        </li>
     </ol>
     <h1 style="color: #333; margin-top: 20px;">
         <strong>Austine's Tech City Kenya</strong>
