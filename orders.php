@@ -24,12 +24,77 @@ try {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - Orders</title>
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        body {
+            background-color: #f4f6f9; /* Soft gray background */
+            font-family: 'Arial', sans-serif;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+        }
+        .table th,
+        .table td {
+            vertical-align: middle;
+            text-align: center;
+        }
+        .table thead th {
+            background-color:rgb(1, 16, 33);
+            color: white;
+            font-weight: bold;
+        }
+        .table tbody tr:hover {
+            background-color: #f8f9fa; /* Light hover effect */
+        }
+        .order-items {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        .order-items li {
+            background-color: #f8f9fa;
+            padding: 10px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+        .status-tag {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        .status-pending {
+            background-color: #ffc107;
+            color: #333;
+        }
+        .status-completed {
+            background-color: #28a745;
+            color: white;
+        }
+        .status-cancelled {
+            background-color: #dc3545;
+            color: white;
+        }
+    </style>
 </head>
 <body>
-    <div class="container mt-5">
+    <div class="container">
         <h1 class="text-center">Orders</h1>
-        <table class="table table-bordered">
+        <table class="table table-striped table-hover">
             <thead>
                 <tr>
                     <th>Order ID</th>
@@ -48,10 +113,23 @@ try {
                         <td><?= htmlspecialchars($order['user_id']) ?></td>
                         <td>$<?= number_format($order['total_amount'], 2) ?></td>
                         <td><?= htmlspecialchars($order['shipping_address']) ?></td>
-                        <td><?= htmlspecialchars($order['payment_status']) ?></td>
+                        <td>
+                            <?php
+                            $status = htmlspecialchars($order['payment_status']);
+                            if ($status === 'Pending') {
+                                echo '<span class="status-tag status-pending">' . $status . '</span>';
+                            } elseif ($status === 'Completed') {
+                                echo '<span class="status-tag status-completed">' . $status . '</span>';
+                            } elseif ($status === 'Cancelled') {
+                                echo '<span class="status-tag status-cancelled">' . $status . '</span>';
+                            } else {
+                                echo htmlspecialchars($status);
+                            }
+                            ?>
+                        </td>
                         <td><?= htmlspecialchars($order['created_at']) ?></td>
                         <td>
-                            <ul>
+                            <ul class="order-items">
                                 <?php foreach (getOrderItems($conn, $order['order_id']) as $item): ?>
                                     <li>
                                         Product ID: <?= htmlspecialchars($item['product_id']) ?>, 
@@ -66,5 +144,8 @@ try {
             </tbody>
         </table>
     </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -68,10 +68,73 @@ try {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Login</title>
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        body {
+            background-color: #f4f6f9; /* Soft gray background */
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .login-container {
+            background: #ffffff;
+            padding: 30px 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+        h2 {
+            color: #333;
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+        .form-control {
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            padding: 10px;
+            font-size: 1rem;
+        }
+        .form-control:focus {
+            border-color:rgb(1, 17, 34);
+            box-shadow: 0 0 5px rgba(1, 26, 53, 0.5);
+        }
+        .btn-primary {
+            background-color:rgb(2, 26, 52);
+            border-color:rgb(1, 23, 46);
+            font-size: 1rem;
+            padding: 10px 20px;
+            border-radius: 5px;
+            width: 100%;
+        }
+        .btn-primary:hover {
+            background-color:rgb(1, 26, 52);
+            border-color:rgb(1, 23, 47);
+        }
+        .alert {
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+        .footer-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color:rgb(1, 23, 46);
+            text-decoration: none;
+        }
+        .footer-link:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-    <div class="container mt-5">
+    <div class="login-container">
         <h2 class="text-center">Admin Login</h2>
         <?php if (isset($_SESSION['error'])): ?>
             <div class="alert alert-danger">
@@ -88,10 +151,9 @@ try {
                 <label for="password" class="form-label">Password</label>
                 <input type="password" class="form-control" id="password" name="password" required>
             </div>
-            <button type="submit" class="btn btn-primary w-100">Login</button>
+            <button type="submit" class="btn btn-primary">Login</button>
         </form>
+        <a href="#" class="footer-link">Forgot Password?</a>
     </div>
 </body>
 </html>
-
-

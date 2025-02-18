@@ -45,15 +45,25 @@ try {
         
         
             <?php endif; ?>
-        <div class="content">
-            <ol id="toplist">
-                
-                <li class="left"><a href="users.php">User management</a></li>
-                <li class="right"><a href="orders.php">Orders</a></li>
-                <li class="right"><a href="analytics.php">Analytics</a></li>
-            </ol>
-            <h1><strong></strong>Austine's Tech City Kenya</strong></h1>
-        </div>
+       
+
+            <div class="content" style="text-align: center; padding: 20px; background-color: #f4f4f4; border-radius: 10px;">
+    <ol id="toplist" style="list-style: none; padding: 0; display: flex; justify-content: center; gap: 15px;">
+        <li class="left" style="display: inline; padding: 10px 15px; background-color:rgb(2, 25, 50); border-radius: 5px;">
+            <a href="users.php" style="color: white; text-decoration: none; font-weight: bold;">User Management</a>
+        </li>
+        <li class="right" style="display: inline; padding: 10px 15px; background-color:rgb(5, 88, 25); border-radius: 5px;">
+            <a href="orders.php" style="color: white; text-decoration: none; font-weight: bold;">Orders</a>
+        </li>
+        <li class="right" style="display: inline; padding: 10px 15px; background-color:rgb(118, 5, 16); border-radius: 5px;">
+            <a href="analytics.php" style="color: white; text-decoration: none; font-weight: bold;">Analytics</a>
+        </li>
+    </ol>
+    <h1 style="color: #333; margin-top: 20px;">
+        <strong>Austine's Tech City Kenya</strong>
+    </h1>
+</div>
+
 
 
 
