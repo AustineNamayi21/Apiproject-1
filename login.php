@@ -42,7 +42,7 @@ try {
                 $otp = $auth->updateOtp($email);
                 if ($auth->sendOtpEmail($email, $user['username'], $otp)) {
                     // Redirect to the verification page
-                    header("Location: verification.php?email=" . urlencode($email));
+                    header("Location:verification.php?email=" . urlencode($email));
                     exit();
                 } else {
                     $_SESSION['error'] = "Failed to send OTP email.";

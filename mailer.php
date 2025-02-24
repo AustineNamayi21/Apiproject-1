@@ -56,7 +56,7 @@ class TwoFactorAuth {
             $mail->Host       = 'smtp.gmail.com';
             $mail->SMTPAuth   = true;
             $mail->Username   = 'austinamayi254@gmail.com'; // Your email
-            $mail->Password   = 'dnnrwudmrzshxqgq';         // Your app password
+            $mail->Password   = 'xkacllgewnsmdrvl';         // Your app password
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
             $mail->Port       = 465;
 
