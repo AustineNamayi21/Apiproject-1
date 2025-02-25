@@ -37,10 +37,27 @@ h1.text-center {
     letter-spacing: 1.5px;
 }
 
+.btn-danger {
+    background: linear-gradient(135deg, #c80303, #c80303);
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #fff;
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.btn-danger:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+}
+
 .row {
     display: flex;
     justify-content: space-between;
     gap: 20px; /* Spacing between cards */
+    margin-bottom: 30px;
 }
 
 .card {
@@ -87,7 +104,7 @@ h1.text-center {
 
 /* Card Colors */
 .bg-primary {
-    background: linear-gradient(135deg, #012143, #02254a);
+    background: linear-gradient(135deg, #03203e, #011c39);
 }
 
 .bg-success {
@@ -95,7 +112,43 @@ h1.text-center {
 }
 
 .bg-info {
-    background: linear-gradient(135deg, #6a0452, #02264b);
+    background: linear-gradient(135deg, #17a2b8, #138496);
+}
+
+h3 {
+    font-size: 1.75rem;
+    font-weight: bold;
+    color: #34495e;
+    margin-top: 30px;
+    margin-bottom: 20px;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+ul li {
+    background: #f9f9f9;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+ul li:hover {
+    transform: translateX(5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Chart Styling */
+canvas {
+    margin-bottom: 30px;
+    background: #fff;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* Responsive Design */
@@ -117,6 +170,10 @@ h1.text-center {
     }
 
     .card-text {
+        font-size: 1.5rem;
+    }
+
+    h3 {
         font-size: 1.5rem;
     }
 }
