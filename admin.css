@@ -98,22 +98,22 @@ h2 {
 }
 
 .btn-warning {
-    background-color: #ffc107;
+    background-color: #d6c508;
     border: none;
 }
 
 .btn-warning:hover {
-    background-color: #e0a800;
+    background-color:#d6c508;
     transform: translateY(-2px);
 }
 
 .btn-danger {
-    background-color: #dc3545;
+    background-color: #811904;
     border: none;
 }
 
 .btn-danger:hover {
-    background-color: #c82333;
+    background-color: #811904;
     transform: translateY(-2px);
 }
 

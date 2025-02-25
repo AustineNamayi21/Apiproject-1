@@ -42,7 +42,7 @@ if (isset($_POST["recover"])) {
                 $mail->Host = 'smtp.gmail.com';
                 $mail->SMTPAuth = true;
                 $mail->Username = 'austinamayi254@gmail.com'; // Your email
-                $mail->Password = 'rmhaynrmyyvmfsym'; // Your email password or app password
+                $mail->Password = 'sfkwcycgnxieieyr'; // Your email password or app password
                 $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
                 $mail->Port = 465;
 
