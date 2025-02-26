@@ -14,6 +14,6 @@ session_destroy();
 $_SESSION['success'] = "You have been logged out successfully.";
 
 // Redirect to the admin login page
-header("Location: admin_login.php");
+header("Location: login.html");
 exit();
 ?>
